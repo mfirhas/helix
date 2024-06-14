@@ -582,6 +582,8 @@ pub enum StatusLineElement {
 
     /// The current workspace along with working directory
     Workspace,
+
+    CurrentWorkingDirectory,
 }
 
 // Cursor shape is read and used on every rendered frame and so needs

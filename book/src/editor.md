@@ -1,22 +1,24 @@
 ## Editor
 
-- [`[editor]` Section](#editor-section)
-- [`[editor.statusline]` Section](#editorstatusline-section)
-- [`[editor.lsp]` Section](#editorlsp-section)
-- [`[editor.cursor-shape]` Section](#editorcursor-shape-section)
-- [`[editor.file-picker]` Section](#editorfile-picker-section)
-- [`[editor.auto-pairs]` Section](#editorauto-pairs-section)
-- [`[editor.search]` Section](#editorsearch-section)
-- [`[editor.whitespace]` Section](#editorwhitespace-section)
-- [`[editor.indent-guides]` Section](#editorindent-guides-section)
-- [`[editor.gutters]` Section](#editorgutters-section)
-  - [`[editor.gutters.line-numbers]` Section](#editorguttersline-numbers-section)
-  - [`[editor.gutters.diagnostics]` Section](#editorguttersdiagnostics-section)
-  - [`[editor.gutters.diff]` Section](#editorguttersdiff-section)
-  - [`[editor.gutters.spacer]` Section](#editorguttersspacer-section)
-- [`[editor.soft-wrap]` Section](#editorsoft-wrap-section)
-- [`[editor.smart-tab]` Section](#editorsmart-tab-section)
-- [`[editor.inline-diagnostics]` Section](#editorinline-diagnostics-section)
+- [Editor](#editor)
+  - [`[editor]` Section](#editor-section)
+  - [`[editor.statusline]` Section](#editorstatusline-section)
+  - [`[editor.lsp]` Section](#editorlsp-section)
+  - [`[editor.cursor-shape]` Section](#editorcursor-shape-section)
+  - [`[editor.file-picker]` Section](#editorfile-picker-section)
+  - [`[editor.auto-pairs]` Section](#editorauto-pairs-section)
+  - [`[editor.auto-save]` Section](#editorauto-save-section)
+  - [`[editor.search]` Section](#editorsearch-section)
+  - [`[editor.whitespace]` Section](#editorwhitespace-section)
+  - [`[editor.indent-guides]` Section](#editorindent-guides-section)
+  - [`[editor.gutters]` Section](#editorgutters-section)
+    - [`[editor.gutters.line-numbers]` Section](#editorguttersline-numbers-section)
+    - [`[editor.gutters.diagnostics]` Section](#editorguttersdiagnostics-section)
+    - [`[editor.gutters.diff]` Section](#editorguttersdiff-section)
+    - [`[editor.gutters.spacer]` Section](#editorguttersspacer-section)
+  - [`[editor.soft-wrap]` Section](#editorsoft-wrap-section)
+  - [`[editor.smart-tab]` Section](#editorsmart-tab-section)
+  - [`[editor.inline-diagnostics]` Section](#editorinline-diagnostics-section)
 
 ### `[editor]` Section
 
@@ -95,6 +97,7 @@ The following statusline elements can be configured:
 | `file-absolute-path` | The absolute path/name of the opened file |
 | `file-base-name` | The basename of the opened file |
 | `workspace` | The current workspace, along with current working directory |
+| `current-working-directory` | The current working directory  |
 | `file-modification-indicator` | The indicator to show whether the file is modified (a `[+]` appears when there are unsaved changes) |
 | `file-encoding` | The encoding of the opened file if it differs from UTF-8 |
 | `file-line-ending` | The file line endings (CRLF or LF) |
