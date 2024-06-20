@@ -583,6 +583,7 @@ pub enum StatusLineElement {
     /// The current workspace along with working directory
     Workspace,
 
+    /// The base of current working directory
     CurrentWorkingDirectory,
 }
 
