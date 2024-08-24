@@ -5,12 +5,14 @@ use crate::{
     key,
     keymap::{KeymapResult, Keymaps},
     ui::{
-        document::{render_document, LinePos, TextRenderer, TranslatedPosition},
+        document::{render_document, LinePos, TextRenderer /*TranslatedPosition*/},
         statusline,
         text_decorations::{self, Decoration, DecorationManager, InlineDiagnostics},
         Completion, Explorer, ProgressSpinners,
     },
 };
+
+use crate::ui::CompletionItem;
 
 use helix_core::{
     diagnostic::NumberOrString,

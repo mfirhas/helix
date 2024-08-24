@@ -2861,7 +2861,7 @@ fn file_picker_in_current_directory(cx: &mut Context) {
 }
 
 fn open_or_focus_explorer(cx: &mut Context) {
-    cx.callback = Some(Box::new(
+    cx.callback.push(Box::new(
         |compositor: &mut Compositor, cx: &mut compositor::Context| {
             if let Some(editor) = compositor.find::<ui::EditorView>() {
                 match editor.explorer.as_mut() {
@@ -2877,7 +2877,7 @@ fn open_or_focus_explorer(cx: &mut Context) {
 }
 
 fn reveal_file(cx: &mut Context, path: Option<PathBuf>) {
-    cx.callback = Some(Box::new(
+    cx.callback.push(Box::new(
         |compositor: &mut Compositor, cx: &mut compositor::Context| {
             if let Some(editor) = compositor.find::<ui::EditorView>() {
                 (|| match editor.explorer.as_mut() {
