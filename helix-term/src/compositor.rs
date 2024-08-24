@@ -66,14 +66,24 @@ impl<'a> Context<'a> {
         use std::sync::Arc;
 
         let config = Arc::new(ArcSwap::from_pointee(Config::default()));
+        let handlers = super::handlers::setup(config.clone());
+        // Arc::new(ArcSwap::from_pointee(lang_loader));
+        let syn_loader = ArcSwap::from_pointee(
+            syntax::Loader::new(Configuration {
+                language: vec![],
+                language_server: std::collections::HashMap::new(),
+            })
+            .unwrap(),
+        );
         Editor::new(
             Rect::new(0, 0, 60, 120),
             Arc::new(theme::Loader::new(&[])),
-            Arc::new(syntax::Loader::new(Configuration { language: vec![] })),
+            Arc::new(syn_loader),
             Arc::new(Arc::new(Map::new(
                 Arc::clone(&config),
                 |config: &Config| &config.editor,
             ))),
+            handlers,
         )
     }
 }
