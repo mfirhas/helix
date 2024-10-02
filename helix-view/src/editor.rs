@@ -248,6 +248,8 @@ pub struct ExplorerConfig {
     pub position: ExplorerPosition,
     /// explorer column width
     pub column_width: usize,
+    /// list of ignored files/directories
+    pub ignore_list: Vec<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -262,6 +264,7 @@ impl Default for ExplorerConfig {
         Self {
             position: ExplorerPosition::Left,
             column_width: 36,
+            ignore_list: vec![".DS_Store".to_string(), ".git/".to_string()],
         }
     }
 }

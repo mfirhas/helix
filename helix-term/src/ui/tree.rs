@@ -1107,6 +1107,7 @@ impl<T: TreeViewItem + Clone> TreeView<T> {
                 key!(PageDown) => self.move_down_page(),
                 key!(PageUp) => self.move_up_page(),
                 shift!('R') => {
+                    crate::ui::explorer::set_explorer_config(cx);
                     if let Err(error) = self.refresh() {
                         cx.editor.set_error(error.to_string())
                     }

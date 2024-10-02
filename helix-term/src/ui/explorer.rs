@@ -13,9 +13,13 @@ use helix_view::{
     theme::Modifier,
     Editor,
 };
-use std::cmp::Ordering;
+use once_cell::sync::Lazy;
 use std::path::{Path, PathBuf};
 use std::{borrow::Cow, fs::DirEntry};
+use std::{
+    cmp::Ordering,
+    sync::{Arc, RwLock},
+};
 use tui::{
     buffer::Buffer as Surface,
     widgets::{Block, Borders, Widget},
@@ -97,6 +101,7 @@ impl TreeViewItem for FileInfo {
         let ret: Vec<_> = std::fs::read_dir(&self.path)?
             .filter_map(|entry| entry.ok())
             .filter_map(|entry| dir_entry_to_file_info(entry, &self.path))
+            .filter(|file_info| filter_ignore_list(file_info))
             .collect();
         Ok(ret)
     }
@@ -107,6 +112,37 @@ impl TreeViewItem for FileInfo {
 
     fn is_parent(&self) -> bool {
         matches!(self.file_type, FileType::Folder | FileType::Root)
+    }
+}
+
+/// ignore policy:
+/// ignore files at every levels: filename
+/// ignore directories at every levels: directory_name/
+fn filter_ignore_list(file_info: &FileInfo) -> bool {
+    let ignore_list = &*EXPLORER_IGNORE_LIST.read().unwrap();
+    match file_info.file_type {
+        FileType::File => !ignore_list.iter().any(|ignore_item| {
+            ignore_item.as_str()
+                == file_info
+                    .path
+                    .file_name()
+                    .unwrap_or_default()
+                    .to_str()
+                    .unwrap_or_default()
+        }),
+        FileType::Root | FileType::Folder => {
+            let filename = file_info
+                .path
+                .file_name()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap_or_default();
+            let mut dirname = filename.to_string();
+            dirname.push_str("/");
+            !ignore_list
+                .iter()
+                .any(|ignore_item| ignore_item.as_str() == dirname)
+        }
     }
 }
 
@@ -155,6 +191,16 @@ struct ExplorerHistory {
     current_root: PathBuf,
 }
 
+/// global static containing list of ignored files/directories, updated from editor Context reading from config.
+pub(in crate::ui) static EXPLORER_IGNORE_LIST: Lazy<Arc<RwLock<Vec<String>>>> =
+    Lazy::new(|| Arc::new(RwLock::new(vec![])));
+
+/// update the EXPLORER_IGNORE_LIST
+pub(in crate::ui) fn set_explorer_config(cx: &mut Context) {
+    let mut explorer_config = EXPLORER_IGNORE_LIST.write().unwrap();
+    *explorer_config = cx.editor.config().explorer.ignore_list.clone();
+}
+
 pub struct Explorer {
     tree: TreeView<FileInfo>,
     history: Vec<ExplorerHistory>,
@@ -171,6 +217,9 @@ impl Explorer {
         let current_root = std::env::current_dir()
             .unwrap_or_else(|_| "./".into())
             .canonicalize()?;
+
+        set_explorer_config(cx);
+
         Ok(Self {
             tree: Self::new_tree_view(current_root.clone())?,
             history: vec![],
@@ -526,6 +575,7 @@ impl Explorer {
             let current_item_path = self.tree.current_item()?.path.clone();
             match (&action, event) {
                 (PromptAction::CreateFileOrFolder, key!(Enter)) => {
+                    set_explorer_config(cx);
                     if line.ends_with(std::path::MAIN_SEPARATOR) {
                         self.new_folder(line)?
                     } else {
@@ -533,23 +583,27 @@ impl Explorer {
                     }
                 }
                 (PromptAction::RemoveFolder, key) => {
+                    set_explorer_config(cx);
                     if let key!('y') = key {
                         close_documents(current_item_path, cx)?;
                         self.remove_folder()?;
                     }
                 }
                 (PromptAction::RemoveFile, key) => {
+                    set_explorer_config(cx);
                     if let key!('y') = key {
                         close_documents(current_item_path, cx)?;
                         self.remove_file()?;
                     }
                 }
                 (PromptAction::RenameFile, key!(Enter)) => {
+                    set_explorer_config(cx);
                     close_documents(current_item_path, cx)?;
                     self.rename_current(line)?;
                 }
                 (_, key!(Esc) | ctrl!('c')) => {}
                 _ => {
+                    set_explorer_config(cx);
                     prompt.handle_event(&Event::Key(*event), cx);
                     self.prompt = Some((action, prompt));
                 }

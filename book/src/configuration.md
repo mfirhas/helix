@@ -41,3 +41,4 @@ Sets explorer side width and style.
 | -------------- | ------------------------------------------- | ------- |
 | `column-width` | explorer side width                         | 30      |
 | `position`     | explorer widget position, `left` or `right` | `left`  |
+| `ignore-list`  | list of files/folders to be hidden from explorer tree view<br/> append `/` for folders | [".DS_Store", ".git/"] |
